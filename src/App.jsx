@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useId, useMemo, useRef, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { ArrowUpRight, ArrowRight, Search, X, Users, Check, Share2, MapPin, CalendarDays, LogOut, RotateCw, Leaf } from 'lucide-react';
 import { CATEGORIES, PROJECT, STATUS } from './config/catalog';
@@ -8,6 +8,7 @@ import { dayLabel, shortDate, isEarly, filterEvents } from './lib/events';
 
 function Modal({ children, title, onClose, wide = false }) {
   const ref = useRef(null);
+  const headingId = useId();
   useEffect(() => {
     const dialog = ref.current;
     if (!dialog.open) dialog.showModal();
@@ -15,10 +16,10 @@ function Modal({ children, title, onClose, wide = false }) {
     dialog.addEventListener('close', close);
     return () => { dialog.removeEventListener('close', close); if (dialog.open) dialog.close(); };
   }, [onClose]);
-  return <dialog ref={ref} className={`modal ${wide ? 'modal-wide' : ''}`} aria-labelledby="dialog-title" onClick={e => { if (e.target === ref.current) onClose(); }}>
+  return <dialog ref={ref} className={`modal ${wide ? 'modal-wide' : ''}`} aria-labelledby={headingId} onClick={e => { if (e.target === ref.current) onClose(); }}>
     <div className="modal-content">
       <div className="modal-top"><span className="small-label">Банный лист</span><button className="icon-button" aria-label="Закрыть" onClick={onClose}><X size={22} /></button></div>
-      <h2 id="dialog-title">{title}</h2>{children}
+      <h2 id={headingId}>{title}</h2>{children}
     </div>
   </dialog>;
 }
@@ -46,7 +47,7 @@ function EventCard({ event, issue, session, votes, members, busy, onVote, onLogi
     <p className="event-venue">{event.venue}</p>
     <p className="event-description">{event.why || event.description}</p>
     <div className="event-tags">{event.tags.slice(0, 2).map(tag => <span key={tag}>{tag}</span>)}{isEarly(event, issue) && <span>Ранний анонс</span>}</div>
-    <div className="event-card-bottom"><VoteControls {...{ event, session, votes, onVote, onLogin }} busy={busy === event.id} /><Company {...{ event, session, votes, members, onLogin }} /></div>
+    <div className="event-card-bottom"><VoteControls {...{ event, session, votes, onVote, onLogin }} busy={Boolean(busy)} /><Company {...{ event, session, votes, members, onLogin }} /></div>
   </article>;
 }
 
@@ -180,7 +181,7 @@ export default function App() {
       <footer className="site-footer"><img src={MEDIA.leaf} width="27" height="27" alt="" /><div><span>Банный лист · Альманах</span><p>Петербург. Время московское. Новые выпуски по четвергам.</p></div>{issue?.documentUrl && <a href={issue.documentUrl} target="_blank" rel="noreferrer">Word в Telegram <ArrowUpRight size={15} /></a>}</footer>
     </div>
     {toast && <div className="toast" role="status">{toast}</div>}
-    {opened && <Modal wide title={opened.title} onClose={closeEvent}><div className="detail-meta"><span><CalendarDays size={17} />{opened.category === 'exhibition' ? (opened.endDate ? `До ${dayLabel(opened.endDate)}` : 'В октябре; завершение уточнить') : dayLabel(opened.date, { weekday: 'long' })}{opened.time && ` · ${opened.time}`}</span><span><MapPin size={17} />{opened.venue}</span></div><p className="detail-address">{opened.address}</p><p className="detail-description">{opened.description}</p><div className="detail-why"><span className="small-label">Ради чего идти</span><p>{opened.why}</p></div><p className="detail-conditions">{opened.details}</p><div className="detail-sources">{opened.sources.map((source, i) => <a key={source.url} className={i === 0 ? 'primary-button' : 'text-link'} href={source.url} target="_blank" rel="noreferrer">{source.label} <ArrowUpRight size={16} /></a>)}</div><div className="detail-company"><h3>Соберём компанию</h3><VoteControls event={opened} {...{ session, votes }} busy={busy === opened.id} onVote={vote} onLogin={openLogin} /><Company event={opened} {...{ session, votes, members }} onLogin={openLogin} />{session && <p className="interested-list">Интересуются: {(votes[opened.id] || []).filter(v => v.status === 'interested').map(v => members.find(m => m.id === v.memberId)?.name).filter(Boolean).join(', ') || 'пока без отметок'}</p>}</div><div className="detail-bottom"><span>Проверено {dayLabel(opened.checkedOn)}</span><button className="text-button" onClick={() => share(opened)}><Share2 size={16} />Переслать событие</button></div></Modal>}
+    {opened && <Modal wide title={opened.title} onClose={closeEvent}><div className="detail-meta"><span><CalendarDays size={17} />{opened.category === 'exhibition' ? (opened.endDate ? `До ${dayLabel(opened.endDate)}` : 'В октябре; завершение уточнить') : dayLabel(opened.date, { weekday: 'long' })}{opened.time && ` · ${opened.time}`}</span><span><MapPin size={17} />{opened.venue}</span></div><p className="detail-address">{opened.address}</p><p className="detail-description">{opened.description}</p><div className="detail-why"><span className="small-label">Ради чего идти</span><p>{opened.why}</p></div><p className="detail-conditions">{opened.details}</p><div className="detail-sources">{opened.sources.map((source, i) => <a key={source.url} className={i === 0 ? 'primary-button' : 'text-link'} href={source.url} target="_blank" rel="noreferrer">{source.label} <ArrowUpRight size={16} /></a>)}</div><div className="detail-company"><h3>Соберём компанию</h3><VoteControls event={opened} {...{ session, votes }} busy={Boolean(busy)} onVote={vote} onLogin={openLogin} /><Company event={opened} {...{ session, votes, members }} onLogin={openLogin} />{session && <p className="interested-list">Интересуются: {(votes[opened.id] || []).filter(v => v.status === 'interested').map(v => members.find(m => m.id === v.memberId)?.name).filter(Boolean).join(', ') || 'пока без отметок'}</p>}</div><div className="detail-bottom"><span>Проверено {dayLabel(opened.checkedOn)}</span><button className="text-button" onClick={() => share(opened)}><Share2 size={16} />Переслать событие</button></div></Modal>}
     {loginOpen && <Modal title="Свои собираются здесь" onClose={closeLogin}><p className="login-intro">Выберите имя и введите общий пароль группы. После входа появятся отметки и участники.</p><form onSubmit={login} className="login-form"><label>Ваше имя<input autoFocus name="name" value={loginName} onChange={e => setLoginName(e.target.value)} minLength={2} maxLength={40} required autoComplete="nickname" placeholder="Как вас знают банщики" /></label><label>Пароль группы<input name="password" type="password" value={loginPassword} onChange={e => setLoginPassword(e.target.value)} required maxLength={200} autoComplete="current-password" /></label>{loginError && <p className="form-error" role="alert">{loginError}</p>}<button type="submit" className="primary-button" disabled={loginBusy}>{loginBusy ? 'Входим…' : 'Войти и выбрать события'}{!loginBusy && <ArrowRight size={18} />}</button></form><p className="login-footnote">Имя видно участникам после входа. Пароль можно узнать в группе.</p></Modal>}
   </>;
 }
