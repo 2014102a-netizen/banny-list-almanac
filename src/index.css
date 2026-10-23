@@ -71,6 +71,26 @@ svg { flex-shrink: 0; }
 .poster-month { font: italic 25px/1.2 var(--font-display); }
 .featured-poster > svg { margin: 15px 0 12px; transform: rotate(-15deg); }
 .poster-bottom { text-align: center; font-size: 8px; text-transform: uppercase; letter-spacing: .1em; line-height: 1.6; }
+.celebration { margin-bottom: 35px; background: var(--color-accent); color: var(--color-paper); }
+.celebration-heading { display: flex; justify-content: space-between; gap: 15px; padding: 15px 28px; font-size: 11px; }
+.celebration-heading > span:last-child { opacity: .7; }
+.celebration-photo { display: block; width: 100%; height: auto; }
+.celebration-body { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 50px; padding: 34px 38px; }
+.celebration-greeting h2 { font: 400 clamp(38px, 5vw, 57px)/1.05 var(--font-display); letter-spacing: -.035em; max-width: 440px; margin-bottom: 22px; }
+.celebration-greeting > p { font-size: 17px; line-height: 1.65; }
+.celebration-greeting > .celebration-signature { margin-top: 18px; font: italic 20px/1.4 var(--font-display); }
+.celebration-button { display: inline-flex; align-items: center; gap: 15px; padding: 12px 0; margin-top: 22px; min-height: 44px; text-align: left; border-bottom: 1px solid currentColor; font-size: 13px; }
+.celebration-program { display: grid; gap: 24px; align-content: start; }
+.celebration-stop + .celebration-stop { border-top: 1px solid var(--color-paper); padding-top: 22px; }
+.celebration-date { display: block; font-size: 11px; opacity: .75; margin-bottom: 7px; }
+.celebration-stop h3 { font: 400 27px/1.15 var(--font-display); }
+.celebration-stop p { font-size: 13px; line-height: 1.6; margin-top: 7px; }
+.celebration-stop > .celebration-time { font-size: 15px; }
+.celebration-stop a { display: inline-flex; align-items: center; gap: 6px; min-height: 36px; font-size: 11px; text-underline-offset: 4px; margin-top: 4px; }
+.celebration-lineup { border-top: 1px solid var(--color-paper); padding: 19px 38px 24px; }
+.celebration-lineup > span { display: block; font-size: 10px; opacity: .75; margin-bottom: 7px; }
+.celebration-lineup p { font-size: 16px; line-height: 1.6; }
+.detail-photo { display: block; width: 100%; height: auto; margin-bottom: 24px; }
 .filter-bar { display: flex; align-items: center; gap: 25px; border-bottom: 1px solid var(--color-line); }
 .category-controls { display: flex; gap: 25px; flex: 1; }
 .category-controls > button { padding: 14px 0 13px; border-bottom: 3px solid transparent; margin-bottom: -1px; font-size: 14px; white-space: nowrap; transition: color .15s, border-color .15s; }
@@ -201,6 +221,19 @@ svg { flex-shrink: 0; }
   .poster-month { font-size: 17px; }
   .featured-poster > svg { width: 43px; height: 43px; margin: 17px 0; }
   .poster-bottom { font-size: 5px; line-height: 1.8; letter-spacing: 0; }
+  .celebration { margin-bottom: 22px; }
+  .celebration-heading { padding: 13px 20px; font-size: 10px; }
+  .celebration-heading > span:last-child { display: none; }
+  .celebration-body { grid-template-columns: minmax(0, 1fr); gap: 30px; padding: 25px 22px 27px; }
+  .celebration-greeting h2 { font-size: 38px; margin-bottom: 18px; }
+  .celebration-greeting > .celebration-signature { font-size: 19px; }
+  .celebration-button { margin-top: 16px; font-size: 12px; }
+  .celebration-program { gap: 21px; }
+  .celebration-stop h3 { font-size: 27px; }
+  .celebration-stop p { font-size: 14px; }
+  .celebration-stop a { font-size: 12px; min-height: 44px; }
+  .celebration-lineup { padding: 18px 22px 24px; }
+  .celebration-lineup p { font-size: 17px; }
   .category-controls { gap: 0; justify-content: space-between; overflow-x: auto; scrollbar-width: none; }
   .category-controls > button { font-size: 12px; padding: 13px 3px 11px; min-height: 44px; }
   .search-box input { font-size: 13px; min-height: 44px; }

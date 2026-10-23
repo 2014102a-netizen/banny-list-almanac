@@ -3,7 +3,8 @@ import { test } from 'node:test';
 import fs from 'node:fs';
 import vm from 'node:vm';
 import crypto from 'node:crypto';
-import { filterEvents } from '../src/lib/events.js';
+import { filterEvents, selectFeatured } from '../src/lib/events.js';
+import { BIRTHDAY } from '../src/config/celebrations.js';
 
 const code=fs.readFileSync(new URL('../apps-script/Code.gs',import.meta.url),'utf8');
 function setup() {
@@ -77,4 +78,13 @@ test('архив и фильтр компании используют ID соб
   assert.deepEqual(filterEvents(events,issue,{category:'all'}).map(e=>e.id),['a','c']);
   assert.deepEqual(filterEvents(events,issue,{category:'all',company:true},{a:[{status:'going',memberId:'m'}]}).map(e=>e.id),['a']);
   assert.deepEqual(filterEvents(events,issue,{category:'all',query:'BASE'}).map(e=>e.id),['a']);
+});
+test('праздник занимает главный экран до окончания бани; затем возвращается концерт',()=>{
+  const concert={id:'rockets-2026-10-25',priority:1};
+  const birthday={id:BIRTHDAY.eventId,priority:0};
+  const events=[concert,birthday];
+  assert.equal(selectFeatured(events,BIRTHDAY,Date.parse('2026-10-23T21:00:00+03:00')),birthday);
+  assert.equal(selectFeatured(events,BIRTHDAY,Date.parse('2026-10-24T15:59:59+03:00')),birthday);
+  assert.equal(selectFeatured(events,BIRTHDAY,Date.parse('2026-10-24T16:00:00+03:00')),concert);
+  assert.equal(selectFeatured([concert],BIRTHDAY,Date.parse(BIRTHDAY.featuredFrom)),concert);
 });

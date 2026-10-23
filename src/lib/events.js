@@ -8,6 +8,11 @@ export function shortDate(value) {
   return date ? new Intl.DateTimeFormat('ru-RU', { timeZone: 'Europe/Moscow', day: 'numeric', month: 'short' }).format(date).replace('.', '') : '';
 }
 export function isEarly(event, issue) { return event.date > issue.periodEnd && event.category !== 'exhibition'; }
+export function selectFeatured(events, celebration, now = Date.now()) {
+  const special = events.find(event => event.id === celebration?.eventId);
+  if (special && now >= Date.parse(celebration.featuredFrom) && now < Date.parse(celebration.featuredUntil)) return special;
+  return events.find(event => event.priority === 1) || events.find(event => event.id !== celebration?.eventId) || events[0];
+}
 export function filterEvents(events, issue, filters, votes = {}) {
   const ids = new Set(issue?.eventIds || []);
   const query = (filters.query || '').trim().toLocaleLowerCase('ru');
