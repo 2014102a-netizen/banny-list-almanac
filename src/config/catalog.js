@@ -11,5 +11,8 @@ export const CATEGORIES = [
   { id: 'club', label: 'Ночи' },
   { id: 'theatre', label: 'Театр' },
   { id: 'exhibition', label: 'Выставки' },
+  { id: 'meeting', label: 'Встречи' },
+  { id: 'festival', label: 'Фестивали' },
+  { id: 'other', label: 'Другое' },
 ];
 export const STATUS = { interested: 'Интересно', going: 'Пойду', pass: 'Пропускаю' };

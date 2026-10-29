@@ -18,7 +18,9 @@ def cell(value):
 def requests_for(catalog,config):
     event_headers=['ID','Название','Категория','Дата','Завершение','Время','Площадка','Адрес','Цена от, ₽','Цена и категория','Описание','Зачем идти','Условия','Теги','Приоритет','Источники JSON','Проверено']
     issue_headers=['ID','Название','Опубликован','Начало периода','Конец периода','ID событий JSON','Word в Telegram']
-    events=[[e['id'],e['title'],e['category'],serial(e['date']),serial(e.get('endDate')),e.get('time',''),e['venue'],e.get('address',''),e.get('price'),e.get('priceLabel',''),e['description'],e['why'],e.get('details',''),', '.join(e.get('tags',[])),e.get('priority',5),json.dumps(e['sources'],ensure_ascii=False),serial(e['checkedOn'])] for e in catalog['events']]
+    # Community records remain in their own tab, including ownership and revisions.
+    editorial=[e for e in catalog['events'] if e.get('origin')!='community']
+    events=[[e['id'],e['title'],e['category'],serial(e['date']),serial(e.get('endDate')),e.get('time',''),e['venue'],e.get('address',''),e.get('price'),e.get('priceLabel',''),e['description'],e['why'],e.get('details',''),', '.join(e.get('tags',[])),e.get('priority',5),json.dumps(e['sources'],ensure_ascii=False),serial(e.get('checkedOn'))] for e in editorial]
     issues=[[str(i['id']),i['title'],serial(i['publishedAt']),serial(i['periodStart']),serial(i['periodEnd']),json.dumps(i['eventIds'],ensure_ascii=False),i.get('documentUrl','')] for i in catalog['issues']]
     event_ids=[e['id'] for e in catalog['events']]
     if len(event_ids)!=len(set(event_ids)): raise ValueError('ID событий должны быть уникальны.')
